@@ -1,0 +1,12 @@
+{
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "svelte.plugin.typescript.enable": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never",
+    "source.fixAll": "always"
+  }
+}

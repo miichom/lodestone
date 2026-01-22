@@ -1,0 +1,58 @@
+{
+  "name": "@miichom/lodestone",
+  "version": "0.1.0",
+  "description": "Fast Lodestone parser optimized for Web Workers",
+  "keywords": [
+    "lodestone",
+    "ffxiv",
+    "final fantasy xiv",
+    "ffxiv data",
+    "scraper",
+    "dom parser",
+    "html parser",
+    "fast"
+  ],
+  "homepage": "https://github.com/miichom/lodestone#readme",
+  "bugs": {
+    "url": "https://github.com/miichom/lodestone/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/miichom/lodestone.git"
+  },
+  "license": "MIT",
+  "author": "miichom <hello@cammy.xyz> (https://cammy.xyz/)",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsup",
+    "format": "prettier --write .",
+    "lint": "eslint src --ext .ts",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "linkedom": "^0.18.12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@tsconfig/node20": "^20.1.8",
+    "@types/node": "^25.0.9",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.0.0",
+    "jiti": "^2.6.1",
+    "prettier": "^3.8.0",
+    "terser": "^5.46.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.0",
+    "vitest": "^4.0.17"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@10.28.0"
+}

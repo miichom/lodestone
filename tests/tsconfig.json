@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "../",
+    "outDir": "./build",
+    "lib": ["ES2022", "DOM"],
+    "types": ["vitest"],
+    "tsBuildInfoFile": ".tsbuildinfo"
+  }
+}
