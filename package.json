@@ -1,7 +1,7 @@
 {
   "name": "@miichom/lodestone",
   "version": "0.1.0",
-  "description": "Fast Lodestone parser optimized for Web Workers",
+  "description": "Fast, worker-safe Lodestone parsing ✨",
   "keywords": [
     "lodestone",
     "ffxiv",
