@@ -163,7 +163,21 @@ export const registry = {
           },
         },
       },
-      columns: {},
+      columns: {
+        achievement: {
+          type: "object",
+          shape: {
+            score: { type: "number", selector: ".achievement__point" },
+            total: { type: "number", selector: ".parts__total", regex: /^(?<name>\d+)/ },
+          },
+        },
+        faceaccessory: {
+          type: "number",
+          selector: ".faceaccessory__sort__total > span:nth-child(1)",
+        },
+        minion: { type: "number", selector: ".minion__sort__total > span:nth-child(1)" },
+        mount: { type: "number", selector: ".minion__sort__total > span:nth-child(1)" },
+      },
     },
     list: {
       query: { q: { type: "string", required: true }, worldname: "string" },
@@ -348,11 +362,22 @@ class Endpoint<R extends Registry> {
 
     if (columns && this.registry.item.columns) {
       for (const key of columns) {
+        const res = await this.req([this.registry.path, id.toString(), key as string], rest);
+        if (res.status === 404) continue;
+        this.check(res);
+
+        const { document } = parseHTML(await res.text());
+        if (!document || document.querySelector(".parts__zero")) continue;
+
         const def = this.registry.item.columns[key as string];
-        if (!def || !("shape" in def)) continue;
-        if (def.type === "object") {
+        if (!def) continue;
+
+        if (!("shape" in def)) {
           // @ts-expect-error 2862 - generic typings overlapping
-          fields[key as string] = this.extract(document, def.shape);
+          fields[key] = this.extract(document, { value: def }).value;
+        } else if (def.type === "object") {
+          // @ts-expect-error 2862 - generic typings overlapping
+          fields[key as string] = this.extract(document, def?.shape);
         } else {
           const rootSelector = def.shape.root.selector;
           const nodes = Array.from(document.querySelectorAll(rootSelector));
