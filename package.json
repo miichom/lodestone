@@ -23,7 +23,7 @@
   "license": "MIT",
   "author": "miichom <hello@cammy.xyz> (https://cammy.xyz/)",
   "type": "module",
-  "main": "dist/index.mjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "vitest",

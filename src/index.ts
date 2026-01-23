@@ -1,4 +1,3 @@
-import { URLSearchParams } from "url";
 import { parseHTML } from "linkedom/worker";
 import LodestoneError from "./error.js";
 
