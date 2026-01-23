@@ -212,6 +212,230 @@ export const registry = {
       },
     },
   },
+  cwls: {
+    path: "crossworld_linkshell",
+    item: {
+      fields: {
+        name: { type: "string", selector: ".heading__linkshell__name", regex: /\s*(?<name>.+)/ },
+        data_center: { type: "string", selector: ".heading__cwls__dcname" },
+        members: {
+          type: "number",
+          selector: "div.cf-member-list > .parts__total",
+          regex: /(?<total>\d+)/,
+        },
+        formed: {
+          type: "string",
+          selector: ".heading__cwls__formed > script",
+          regex: /ldst_strftime\((\d+),/,
+        },
+      },
+    },
+    list: {
+      query: { q: { type: "string", required: true }, dcname: "string" },
+      fields: {
+        id: {
+          type: "string",
+          selector: ".entry__link--line",
+          attribute: "href",
+          regex: /lodestone\/crossworld_linkshell\/(?<id>.+)\//,
+        },
+        name: { type: "string", selector: ".entry__name" },
+        data_center: { type: "string", selector: ".entry__world" },
+        members: { type: "string", selector: ".entry__linkshell__member > div > span" },
+      },
+    },
+  },
+  freecompany: {
+    path: "freecompany",
+    item: {
+      fields: {
+        id: {
+          type: "string",
+          selector: "a.entry__freecompany",
+          regex: /lodestone\/freecompany\/(?<id>\d+)\//,
+        },
+        name: { type: "string", selector: "p.entry__freecompany__name" },
+        world_name: {
+          type: "string",
+          selector: "p.entry__freecompany__gc:nth-child(2)",
+          regex: /^(?<world>\w+)/,
+        },
+        data_center: {
+          type: "string",
+          selector: "p.entry__freecompany__gc:nth-child(2)",
+          regex: /\[(?<datacenter>\w+)\]/,
+        },
+        grand_company: {
+          type: "object",
+          shape: {
+            name: {
+              type: "string",
+              selector: "p.entry__freecompany__gc:nth-child(1)",
+              regex: /^(?<name>[^/]+)/,
+            },
+            rank: {
+              type: "string",
+              selector: "p.entry__freecompany__gc:nth-child(1)",
+              regex: /\/\s*(?<rank>.+)$/,
+            },
+          },
+        },
+        rank: { type: "number", selector: "p.freecompany__text:nth-of-type(7)" },
+        slogan: { type: "string", selector: ".freecompany__text__message" },
+        tag: { type: "string", selector: ".freecompany__text.freecompany__text__tag" },
+        members: { type: "number", selector: "p.freecompany__text:nth-of-type(6)" },
+        crest: {
+          type: "string[]",
+          selector:
+            "div.ldst__window:nth-child(1) > div:nth-child(2) > a:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > img",
+          attribute: "src",
+        },
+        rankings: {
+          type: "object",
+          shape: {
+            weekly: {
+              type: "number",
+              selector: ".character__ranking__data tr:nth-child(1) > th:nth-child(1)",
+              regex: /Weekly Rank:(?<rank>\d+)/,
+            },
+            monthly: {
+              type: "number",
+              selector: ".character__ranking__data tr:nth-child(2) > th:nth-child(1)",
+              regex: /Monthly Rank:(?<rank>\d+)/,
+            },
+          },
+        },
+        estate: {
+          type: "object",
+          shape: {
+            name: { type: "string", selector: ".freecompany__estate__name" },
+            greeting: { type: "string", selector: ".freecompany__estate__greeting" },
+            plot: { type: "string", selector: ".freecompany__estate__text" },
+          },
+        },
+        formed: {
+          type: "string",
+          selector: "p.freecompany__text:nth-of-type(5) > script",
+          regex: /ldst_strftime\((\d+),/,
+        },
+      },
+    },
+    list: {
+      query: { q: { type: "string", required: true }, worldname: "string" },
+      fields: {
+        id: {
+          type: "string",
+          selector: ".entry__block",
+          attribute: "href",
+          regex: /lodestone\/freecompany\/(?<id>\d+)\//,
+        },
+        name: { type: "string", selector: ".entry__name" },
+        world_name: {
+          type: "string",
+          selector: ".entry__world:nth-child(3)",
+          regex: /^(?<world>\w+)/,
+        },
+        data_center: {
+          type: "string",
+          selector: ".entry__world:nth-child(3)",
+          regex: /\[(?<datacenter>\w+)\]/,
+        },
+        grand_company: {
+          type: "object",
+          shape: {
+            name: {
+              type: "string",
+              selector: "p.entry__freecompany__gc:nth-child(1)",
+              regex: /^(?<name>[^/]+)/,
+            },
+          },
+        },
+        crest: {
+          type: "string[]",
+          selector: ".entry__freecompany__crest__image > img",
+          attribute: "src",
+        },
+        members: { type: "number", selector: ".entry__freecompany__fc-member" },
+        has_estate: { type: "boolean", selector: ".entry__freecompany__fc-housing" },
+        formed: {
+          type: "string",
+          selector: ".entry__freecompany__fc-day > script",
+          regex: /ldst_strftime\((\d+),/,
+        },
+      },
+    },
+  },
+  linkshell: {
+    path: "linkshell",
+    item: {
+      fields: {
+        name: { type: "string", selector: ".heading__linkshell__name", regex: /\s*(?<name>.+)/ },
+        world_name: { type: "string", selector: ".entry__world", regex: /^(?<world>\w+)/ },
+        data_center: { type: "string", selector: ".entry__world", regex: /\[(?<datacenter>\w+)\]/ },
+        members: {
+          type: "number",
+          selector: "div.cf-member-list > .parts__total",
+          regex: /(?<total>\d+)/,
+        },
+      },
+    },
+    list: {
+      query: { q: { type: "string", required: true }, worldname: "string" },
+      fields: {
+        id: {
+          type: "string",
+          selector: ".entry__block",
+          attribute: "href",
+          regex: /lodestone\/linkshell\/(?<id>.+)\//,
+        },
+        name: { type: "string", selector: ".entry__name" },
+        world_name: { type: "string", selector: ".entry__world", regex: /^(?<world>\w+)/ },
+        data_center: { type: "string", selector: ".entry__world", regex: /\[(?<datacenter>\w+)\]/ },
+        members: {
+          type: "number",
+          selector: ".entry__linkshell__member > div > span",
+          regex: /(?<total>\d+)/,
+        },
+      },
+    },
+  },
+  pvpteam: {
+    path: "pvpteam",
+    item: {
+      fields: {
+        name: { type: "string", selector: ".entry__pvpteam__name--team" },
+        data_center: { type: "string", selector: ".entry__pvpteam__name--dc" },
+        crest: {
+          type: "string[]",
+          selector: ".entry__pvpteam__crest__image > img",
+          attribute: "src",
+        },
+        formed: {
+          type: "string",
+          selector: ".entry__pvpteam__data--formed > script",
+          regex: /ldst_strftime\((\d+),/,
+        },
+      },
+    },
+    list: {
+      query: { q: { type: "string", required: true }, dcname: "string" },
+      fields: {
+        id: {
+          type: "string",
+          selector: ".entry__link",
+          attribute: "href",
+          regex: /lodestone\/pvpteam\/(?<id>.+)\//,
+        },
+        name: { type: "string", selector: ".entry__name" },
+        data_center: { type: "string", selector: ".entry__world" },
+        crest: {
+          type: "string[]",
+          selector: ".entry__pvpteam__search__crest__image > img",
+          attribute: "src",
+        },
+      },
+    },
+  },
 } satisfies Record<string, Registry>;
 
 // endpoint definitions
@@ -419,9 +643,17 @@ class Endpoint<R extends Registry> {
 
 // lodestone client
 export type Character = typeof registry.character;
+export type CWLS = typeof registry.cwls;
+export type Freecompany = typeof registry.freecompany;
+export type Linkshell = typeof registry.linkshell;
+export type PvPTeam = typeof registry.pvpteam;
 
 export class Client {
   public readonly character: Endpoint<Character>;
+  public readonly cwls: Endpoint<CWLS>;
+  public readonly freecompany: Endpoint<Freecompany>;
+  public readonly linkshell: Endpoint<Linkshell>;
+  public readonly pvpteam: Endpoint<PvPTeam>;
 
   /**
    * @since 0.1.0
@@ -437,6 +669,10 @@ export class Client {
 
     const normalized: LodestoneOptions = { locale: options.locale ?? "na", headers };
     this.character = new Endpoint(registry.character, normalized);
+    this.cwls = new Endpoint(registry.cwls, normalized);
+    this.freecompany = new Endpoint(registry.freecompany, normalized);
+    this.linkshell = new Endpoint(registry.linkshell, normalized);
+    this.pvpteam = new Endpoint(registry.pvpteam, normalized);
   }
 }
 
