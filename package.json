@@ -29,7 +29,7 @@
     "test": "vitest",
     "build": "tsup",
     "format": "prettier --write .",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src --ext .ts --fix",
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
@@ -43,6 +43,7 @@
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-perfectionist": "^5.4.0",
     "globals": "^17.0.0",
     "jiti": "^2.6.1",
     "prettier": "^3.8.0",
