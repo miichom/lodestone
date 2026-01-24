@@ -69,8 +69,7 @@ const ls = new Lodestone({
 
 ### `locale?: "de" | "eu" | "fr" | "jp" | "na"`
 
-Selects which Lodestone region to target.  
-Defaults to **`"na"`**.
+Selects which Lodestone region to target. Defaults to **`"na"`**.
 
 Each locale maps to its own Lodestone instance:
 
@@ -81,8 +80,6 @@ Each locale maps to its own Lodestone instance:
 - `de` → https://de.finalfantasyxiv.com/lodestone
 
 All requests made through the client automatically use the selected locale.
-
----
 
 ### `headers?: Record<string, string>`
 
@@ -107,8 +104,6 @@ headers: {
 For more information on the `User-Agent` header, please see https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent.
 
 > While optional, providing a custom User‑Agent is recommended for any automated or high‑volume usage.
-
----
 
 ### Column options (for `get` only)
 
