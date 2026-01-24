@@ -1,4 +1,5 @@
 import { parseHTML } from "linkedom/worker";
+
 import LodestoneError from "./error.js";
 
 const BASE_URL = "https://%s.finalfantasyxiv.com/lodestone/";

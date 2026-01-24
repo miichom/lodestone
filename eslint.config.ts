@@ -13,12 +13,12 @@ export default defineConfig([
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   {
     rules: {
-      "no-console": "warn",
+      "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
-      "@typescript-eslint/consistent-type-imports": "error",
+      "no-console": "warn",
     },
   },
 ]);
