@@ -28,7 +28,7 @@ type Registry = {
   path: string;
   item: { fields: Selectors; columns?: Selectors };
   list: {
-    query: { [key: string]: { type: Primitive; required: boolean } | Primitive };
+    query: { [key: string]: { type: Primitive | RegExp; required: boolean } | Primitive | RegExp };
     fields: Selectors;
   };
 };
@@ -179,7 +179,15 @@ export const registry = {
       },
     },
     list: {
-      query: { q: { type: "string", required: true }, worldname: "string" },
+      query: {
+        q: { type: "string", required: true },
+        worldname: /^(?:_dc_[A-Za-z]+|_region_[1-4]|[A-Za-z]+)$/,
+        classjob: /^(?:\d+|_job_(?:TANK|HEALER|MELEE|RANGED|CASTER|GATHERER|CRAFTER))$/,
+        race_tribe: /^(?:race_\d+|tribe_\d+)$/,
+        gcid: /^[123]$/,
+        blog_lang: /^(?:ja|en|de|fr)$/,
+        order: /^(?:1|8)?$/,
+      },
       fields: {
         id: {
           type: "string",
@@ -230,7 +238,13 @@ export const registry = {
       },
     },
     list: {
-      query: { q: { type: "string", required: true }, dcname: "string" },
+      query: {
+        q: { type: "string", required: true },
+        dcname: /^(?:_dc_[A-Za-z]+|_region_[1-4])$/,
+        character_count: /^(?:\d+-\d+|\d+-)$/,
+        cf_public: "boolean",
+        order: /^(?:1|6)?$/,
+      },
       fields: {
         id: {
           type: "string",
@@ -320,7 +334,19 @@ export const registry = {
       },
     },
     list: {
-      query: { q: { type: "string", required: true }, worldname: "string" },
+      query: {
+        q: { type: "string", required: true },
+        worldname: /^(?:_dc_[A-Za-z]+|_region_[1-4]|[A-Za-z]+)$/,
+        character_count: /^(?:\d+-\d+|\d+-)$/,
+        cf_public: "boolean",
+        gcid: /^[123]$/,
+        activities: /^(?:-1|[0-8])$/,
+        roles: /^(?:-1|1[6-9]|20)$/,
+        activetime: /^[1-3]$/,
+        join: "boolean",
+        house: /^[0-2]$/,
+        order: /^(?:1|6)?$/,
+      },
       fields: {
         id: {
           type: "string",
@@ -379,7 +405,13 @@ export const registry = {
       },
     },
     list: {
-      query: { q: { type: "string", required: true }, worldname: "string" },
+      query: {
+        q: { type: "string", required: true },
+        worldname: /^(?:_region_[1-4]|[A-Za-z]+)$/,
+        character_count: /^(?:\d+-\d+|\d+-)$/,
+        cf_public: "boolean",
+        order: /^(?:1|6)?$/,
+      },
       fields: {
         id: {
           type: "string",
@@ -417,7 +449,12 @@ export const registry = {
       },
     },
     list: {
-      query: { q: { type: "string", required: true }, dcname: "string" },
+      query: {
+        q: { type: "string", required: true },
+        dcname: /^(?:_dc_[A-Za-z]+|_region_[1-4])$/,
+        cf_public: "boolean",
+        order: /^(?:1|4)?$/,
+      },
       fields: {
         id: {
           type: "string",
