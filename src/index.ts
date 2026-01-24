@@ -482,12 +482,11 @@ type EndpointOptions<R extends Registry> = LodestoneOptions & {
 export type InferEndpointItem<E> = E extends Endpoint<infer R> ? InferItem<R> : never;
 export type InferEndpointList<E> = E extends Endpoint<infer R> ? InferList<R>[] : never;
 
+/**
+ * A Generic Lodestone endpoint
+ * @since 0.1.0
+ */
 class Endpoint<R extends Registry> {
-  /**
-   * @since 0.1.0
-   * @param {R} registry
-   * @param {EndpointOptions} [options]
-   */
   public constructor(
     protected readonly registry: R,
     protected options?: EndpointOptions<R>
@@ -600,10 +599,11 @@ class Endpoint<R extends Registry> {
   }
 
   /**
+   * Fetch a single Lodestone item by an ID.
+   * @param {NumberResolvable} id The unique identifier for the item
+   * @param {EndpointOptions<R>} [options] Optional overrides for locale, headers or requested columns.
+   * @returns {Promise<(InferItem<R> & Partial<InferColumns<R>>) | null>} Parsed item fields, or `null` if the page does not exist.
    * @since 0.1.0
-   * @param {NumberResolvable} id
-   * @param {EndpointOptions<R>} [options]
-   * @returns {Promise<InferItem<R>>}
    */
   public async get(
     id: NumberResolvable,
@@ -651,10 +651,11 @@ class Endpoint<R extends Registry> {
   }
 
   /**
+   * Performs a Lodestone-style search.
+   * @param {InferQuery<R>} query Fully type-safe and inferred search parameters defined by the registry. These correspond directly to Lodestone's own search filters.
+   * @param {Omit<EndpointOptions<R>, "columns">} [options] Optional locale or header overrides.
+   * @returns {Promise<InferList<R>[] | null>} An array of parsed search results, or `null` if Lodestone reports that no entries match the query.
    * @since 0.1.0
-   * @param {InferQuery<R>} query
-   * @param {Omit<EndpointOptions<R>, "columns">} [options]
-   * @returns {Promise<InferList<R>[]>}
    */
   public async find(
     query: InferQuery<R>,
