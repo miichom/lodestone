@@ -52,11 +52,21 @@ export type InferSelector<T> = T extends { type: infer U }
         : never
   : never;
 
-export type InferItem<R extends Registry> = InferSelectors<R["item"]["fields"]>;
-export type InferList<R extends Registry> = InferSelectors<R["list"]["fields"]>;
-export type InferColumns<R extends Registry> = R["item"]["columns"] extends Selectors
+export type InferColumns<R extends Registry> = R["item"] extends { columns: Selectors }
   ? { [K in keyof R["item"]["columns"]]: InferSelector<R["item"]["columns"][K]> }
-  : never;
+  : object;
+
+export type InferSelectedColumns<R extends Registry, C extends Array<keyof InferColumns<R>>> = {
+  [K in C[number]]: InferColumns<R>[K];
+};
+
+export type InferItem<
+  R extends Registry,
+  C extends Array<keyof InferColumns<R>> | undefined = undefined,
+> = InferSelectors<R["item"]["fields"]> &
+  (C extends Array<unknown> ? InferSelectedColumns<R, C> : InferColumns<R>);
+
+export type InferList<R extends Registry> = InferSelectors<R["list"]["fields"]>;
 
 // endpoint registry definitions
 export const character = {

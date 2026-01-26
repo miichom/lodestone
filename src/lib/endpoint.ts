@@ -32,7 +32,7 @@ export type EndpointOptions = { headers?: Record<string, string>; locale?: strin
 export class Endpoint<R extends Registry> {
   /**
    * A generic Lodestone endpoint used to search and get items from Lodestone.
-   * @param {T} registry The provided endpoint registry containing field selectors to obtain
+   * @param {R} registry The provided endpoint registry containing field selectors to obtain
    * @param {EndpointOptions<R>} [options] Default method options to use when fetching from Lodestone.
    * @since 0.1.0
    */
@@ -268,13 +268,13 @@ export class Endpoint<R extends Registry> {
   /**
    * @param {NumberResolvable} id The unique identifier for the Lodestone item.
    * @param {EndpointOptions & { columns?: Array<keyof InferColumns<R>> }} [options] Optional method overrides.
-   * @returns {Promise<(InferItem<R> & Partial<InferColumns<R>) | null>}
+   * @returns {Promise<(InferItem<R>) | null>}
    * @since 0.1.0
    */
-  public async get(
+  public async get<C extends Array<keyof InferColumns<R>> = []>(
     id: NumberResolvable,
-    options: EndpointOptions & { columns?: Array<keyof InferColumns<R>> } = {}
-  ): Promise<(InferItem<R> & Partial<InferColumns<R>>) | null> {
+    options: EndpointOptions & { columns?: C } = {}
+  ): Promise<InferItem<R, C> | null> {
     const { columns, ...rest } = Object.assign(this.options ?? {}, options);
 
     const document = await this.fetchDocument(id.toString(), rest);
@@ -288,6 +288,6 @@ export class Endpoint<R extends Registry> {
       }
     }
 
-    return fields as InferItem<R> & Partial<InferColumns<R>>;
+    return fields as InferItem<R, C>;
   }
 }
