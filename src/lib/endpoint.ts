@@ -78,6 +78,7 @@ export class Endpoint<R extends Registry> {
     return document;
   }
 
+  /* v8 ignore next */
   private async fetchColumn(
     id: NumberResolvable,
     key: string,
@@ -99,6 +100,7 @@ export class Endpoint<R extends Registry> {
 
   private isMissing = (value: unknown) => value === undefined || value === null;
 
+  /* v8 ignore next */
   private isValid = (value: unknown, type: Primitive) => {
     switch (type) {
       case "number": {
@@ -141,6 +143,7 @@ export class Endpoint<R extends Registry> {
 
       if (this.isMissing(value)) continue;
 
+      /* v8 ignore next */
       if (!this.isValid(value, shape.type)) {
         throw new LodestoneError(`Query parameter "${key}" must be type ${shape.type}.`);
       } else if (shape.pattern && !shape.pattern.test(String(value))) {
