@@ -250,7 +250,7 @@ export class Endpoint<R extends Registry> {
     query: InferQuery<R>,
     options: EndpointOptions & { fields?: F } = {}
   ): Promise<InferList<R>[] | null> {
-    const { fields: filteredFields, ...rest } = Object.assign(this.options ?? {}, options);
+    const { fields: filteredFields, ...rest } = options;
     this.validate(query);
 
     const parameters = new URLSearchParams(
@@ -289,15 +289,18 @@ export class Endpoint<R extends Registry> {
    * @since 0.1.0
    */
   public async get<
-    F extends Array<Extract<keyof InferFields<R>, string>> = [],
-    C extends Array<Extract<keyof InferColumns<R>, string>> = [],
+    F extends Array<Extract<keyof InferFields<R>, string>> | undefined = undefined,
+    C extends Array<Extract<keyof InferColumns<R>, string>> | undefined = undefined,
   >(
     id: NumberResolvable,
     options: EndpointOptions & { fields?: F; columns?: C } = {}
   ): Promise<InferItem<R, F, C> | null> {
-    const { columns, fields: filteredFields, ...rest } = Object.assign(this.options ?? {}, options);
+    const { columns, fields: filteredFields, ...rest } = options;
 
-    const document = await this.fetchDocument(id.toString(), rest);
+    const document = await this.fetchDocument(
+      id.toString(),
+      Object.assign(this.options ?? {}, rest)
+    );
     if (!document) return null;
 
     const selectedFields = filteredFields?.length
@@ -308,7 +311,9 @@ export class Endpoint<R extends Registry> {
     if (columns && this.registry.item.columns) {
       for (const key of columns) {
         const value = await this.fetchColumn(id, String(key), rest);
-        if (value !== undefined) fields[key as string] = value as Primitives;
+        if (value !== undefined) {
+          fields[key as string] = value as Primitives;
+        }
       }
     }
 

@@ -1,5 +1,11 @@
 // type definitions
-export type Primitives = { boolean: boolean; number: number; string: string; date: Date; url: URL };
+export type Primitives = {
+  boolean: boolean;
+  number: number;
+  string: string;
+  date: Date;
+  url: URL;
+};
 export type Primitive = keyof Primitives;
 
 // selectors type definitions
@@ -29,7 +35,9 @@ export type Registry = {
 export type ExtractPrimitive<T extends Primitive> = Primitives[T];
 export type ExtractQuery<T extends QueryShape> = T["type"];
 
-type RequiredKeys<T> = { [K in keyof T]: T[K] extends { required: true } ? K : never }[keyof T];
+type RequiredKeys<T> = {
+  [K in keyof T]: T[K] extends { required: true } ? K : never;
+}[keyof T];
 
 export type InferQuery<R extends Registry> = Partial<{
   [K in keyof R["list"]["query"]]: ExtractPrimitive<ExtractQuery<R["list"]["query"][K]>>;
@@ -37,7 +45,10 @@ export type InferQuery<R extends Registry> = Partial<{
   [K in RequiredKeys<R["list"]["query"]>]: ExtractPrimitive<ExtractQuery<R["list"]["query"][K]>>;
 };
 
-export type InferSelectors<T extends Selectors> = { [K in keyof T]: InferSelector<T[K]> };
+export type InferSelectors<T extends Selectors> = {
+  [K in keyof T]: InferSelector<T[K]>;
+};
+
 export type InferSelector<T> = T extends { type: infer U }
   ? U extends keyof Primitives
     ? Primitives[U]
@@ -58,20 +69,30 @@ export type InferColumns<R extends Registry> = R["item"] extends { columns: Sele
   ? { [K in keyof R["item"]["columns"]]: InferSelector<R["item"]["columns"][K]> }
   : object;
 
-export type InferSelectedColumns<R extends Registry, C extends Array<keyof InferColumns<R>>> = {
-  [K in C[number]]: InferColumns<R>[K];
-};
-
+// selection helpers
 export type InferSelectedFields<R extends Registry, F extends Array<keyof InferFields<R>>> = {
   [K in F[number]]: InferFields<R>[K];
 };
 
-export type InferItem<
-  R extends Registry,
-  F extends Array<keyof InferFields<R>> | undefined = undefined,
-  C extends Array<keyof InferColumns<R>> | undefined = undefined,
-> = (F extends Array<unknown> ? InferSelectedFields<R, F> : InferFields<R>) &
-  (C extends Array<unknown> ? InferSelectedColumns<R, C> : InferColumns<R>);
+export type InferSelectedColumns<R extends Registry, C extends Array<keyof InferColumns<R>>> = {
+  [K in C[number]]: InferColumns<R>[K];
+};
+
+// item inference with optional selection
+type InferItemFields<R extends Registry, F> = F extends undefined
+  ? InferFields<R>
+  : F extends Array<keyof InferFields<R>>
+    ? InferSelectedFields<R, F>
+    : never;
+
+type InferItemColumns<R extends Registry, C> = C extends undefined
+  ? InferColumns<R>
+  : C extends Array<keyof InferColumns<R>>
+    ? InferSelectedColumns<R, C>
+    : never;
+
+export type InferItem<R extends Registry, F = undefined, C = undefined> = InferItemFields<R, F> &
+  InferItemColumns<R, C>;
 
 export type InferList<R extends Registry> = InferSelectors<R["list"]["fields"]>;
 
