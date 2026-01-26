@@ -2,6 +2,7 @@
 import { parseHTML } from "linkedom/worker";
 import type {
   InferColumns,
+  InferFields,
   InferItem,
   InferList,
   InferQuery,
@@ -186,6 +187,17 @@ export class Endpoint<R extends Registry> {
     }
   }
 
+  private pickSelectors<T extends Selectors, K extends keyof T>(
+    selectors: T,
+    keys: K[]
+  ): Pick<T, K> {
+    const out: Partial<Pick<T, K>> = {};
+    for (const key of keys) {
+      out[key] = selectors[key];
+    }
+    return out as Pick<T, K>;
+  }
+
   /* v8 ignore next */
   private extract<T extends Selectors>(dom: Document | Element, selectors: T): InferSelectors<T> {
     const out: Record<string, unknown> = {};
@@ -234,10 +246,11 @@ export class Endpoint<R extends Registry> {
    * @returns {Promise<InferList<R>[] | null>}
    * @since 0.1.0
    */
-  public async find(
+  public async find<F extends Array<Extract<keyof InferFields<R>, string>> = []>(
     query: InferQuery<R>,
-    options: EndpointOptions = {}
+    options: EndpointOptions & { fields?: F } = {}
   ): Promise<InferList<R>[] | null> {
+    const { fields: filteredFields, ...rest } = Object.assign(this.options ?? {}, options);
     this.validate(query);
 
     const parameters = new URLSearchParams(
@@ -253,13 +266,17 @@ export class Endpoint<R extends Registry> {
 
     const document = await this.fetchDocument(
       `?${parameters}`,
-      Object.assign(this.options ?? {}, options)
+      Object.assign(this.options ?? {}, rest)
     );
     if (!document) return null;
 
+    const selectedFields = filteredFields?.length
+      ? this.pickSelectors(this.registry.item.fields, filteredFields)
+      : this.registry.item.fields;
+
     const entries = [...document.querySelectorAll("div.entry")];
     const results = entries
-      .map((element) => this.extract(element, this.registry.list.fields))
+      .map((element) => this.extract(element, selectedFields))
       .filter((v) => v.id !== null || v.id !== undefined);
 
     return results as InferList<R>[];
@@ -271,16 +288,23 @@ export class Endpoint<R extends Registry> {
    * @returns {Promise<(InferItem<R>) | null>}
    * @since 0.1.0
    */
-  public async get<C extends Array<keyof InferColumns<R>> = []>(
+  public async get<
+    F extends Array<Extract<keyof InferFields<R>, string>> = [],
+    C extends Array<Extract<keyof InferColumns<R>, string>> = [],
+  >(
     id: NumberResolvable,
-    options: EndpointOptions & { columns?: C } = {}
-  ): Promise<InferItem<R, C> | null> {
-    const { columns, ...rest } = Object.assign(this.options ?? {}, options);
+    options: EndpointOptions & { fields?: F; columns?: C } = {}
+  ): Promise<InferItem<R, F, C> | null> {
+    const { columns, fields: filteredFields, ...rest } = Object.assign(this.options ?? {}, options);
 
     const document = await this.fetchDocument(id.toString(), rest);
     if (!document) return null;
 
-    const fields = this.extract(document, this.registry.item.fields);
+    const selectedFields = filteredFields?.length
+      ? this.pickSelectors(this.registry.item.fields, filteredFields)
+      : this.registry.item.fields;
+
+    const fields = this.extract(document, selectedFields);
     if (columns && this.registry.item.columns) {
       for (const key of columns) {
         const value = await this.fetchColumn(id, String(key), rest);
@@ -288,6 +312,6 @@ export class Endpoint<R extends Registry> {
       }
     }
 
-    return fields as InferItem<R, C>;
+    return fields as InferItem<R, F, C>;
   }
 }

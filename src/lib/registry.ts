@@ -52,6 +52,8 @@ export type InferSelector<T> = T extends { type: infer U }
         : never
   : never;
 
+export type InferFields<R extends Registry> = InferSelectors<R["item"]["fields"]>;
+
 export type InferColumns<R extends Registry> = R["item"] extends { columns: Selectors }
   ? { [K in keyof R["item"]["columns"]]: InferSelector<R["item"]["columns"][K]> }
   : object;
@@ -60,10 +62,15 @@ export type InferSelectedColumns<R extends Registry, C extends Array<keyof Infer
   [K in C[number]]: InferColumns<R>[K];
 };
 
+export type InferSelectedFields<R extends Registry, F extends Array<keyof InferFields<R>>> = {
+  [K in F[number]]: InferFields<R>[K];
+};
+
 export type InferItem<
   R extends Registry,
+  F extends Array<keyof InferFields<R>> | undefined = undefined,
   C extends Array<keyof InferColumns<R>> | undefined = undefined,
-> = InferSelectors<R["item"]["fields"]> &
+> = (F extends Array<unknown> ? InferSelectedFields<R, F> : InferFields<R>) &
   (C extends Array<unknown> ? InferSelectedColumns<R, C> : InferColumns<R>);
 
 export type InferList<R extends Registry> = InferSelectors<R["list"]["fields"]>;
