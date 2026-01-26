@@ -202,11 +202,12 @@ export class Endpoint<R extends Registry> {
 
       if (isArray) {
         const nodes = [...dom.querySelectorAll(sel.selector)];
-        out[key] = nodes.map((n) => {
+        const array = nodes.map((n) => {
           const raw = this.getRawValue(n, sel);
           const extracted = this.applyRegex(raw, sel);
           return this.coerce(extracted, base);
         });
+        out[key] = array.length > 0 ? array : undefined;
         continue;
       }
 
