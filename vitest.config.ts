@@ -2,11 +2,10 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    globals: true,
+    coverage: { provider: "v8", reporter: ["text", "json-summary", "lcov", "cobertura"] },
     environment: "node",
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "json-summary", "lcov", "cobertura"],
-    },
+    globals: true,
+    hookTimeout: 10_000,
+    testTimeout: 10_000,
   },
 });

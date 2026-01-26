@@ -3,12 +3,12 @@ import type { Options } from "tsup";
 export const tsup: Options = {
   clean: true,
   dts: true,
-  format: ["cjs", "esm", "iife"],
-  minify: "terser",
-  skipNodeModulesBundle: true,
+  entry: ["src/index.ts"],
   entryPoints: ["src/index.ts"],
-  target: "es2020",
+  format: ["esm"],
+  minify: "terser",
   outDir: "dist",
-  entry: ["src/**/*.ts"],
-  splitting: true,
+  skipNodeModulesBundle: true,
+  target: "es2020",
+  terserOptions: { format: { comments: /(^\*\*)|(@preserve|@license|@cc_on)/ } },
 };
