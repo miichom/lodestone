@@ -1,7 +1,8 @@
 import js from "@eslint/js";
-import prettier from "eslint-config-prettier";
-import perfectionist from "eslint-plugin-perfectionist";
 import { defineConfig } from "eslint/config";
+import prettier from "eslint-config-prettier";
+import sort from "eslint-plugin-sort";
+import unicorn from "eslint-plugin-unicorn";
 import globals from "globals";
 import ts from "typescript-eslint";
 
@@ -9,7 +10,8 @@ export default defineConfig([
   js.configs.recommended,
   ...ts.configs.recommended,
   prettier,
-  perfectionist.configs["recommended-natural"],
+  unicorn.configs.recommended,
+  sort.configs["flat/recommended"],
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   {
     rules: {
