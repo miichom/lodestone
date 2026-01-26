@@ -1,5 +1,11 @@
 // type definitions
-export type Primitives = { boolean: boolean; number: number; string: string; date: Date; url: URL };
+export type Primitives = {
+  boolean: boolean;
+  number: number;
+  string: string;
+  date: Date;
+  url: URL;
+};
 export type Primitive = keyof Primitives;
 
 // selectors type definitions
@@ -29,7 +35,9 @@ export type Registry = {
 export type ExtractPrimitive<T extends Primitive> = Primitives[T];
 export type ExtractQuery<T extends QueryShape> = T["type"];
 
-type RequiredKeys<T> = { [K in keyof T]: T[K] extends { required: true } ? K : never }[keyof T];
+type RequiredKeys<T> = {
+  [K in keyof T]: T[K] extends { required: true } ? K : never;
+}[keyof T];
 
 export type InferQuery<R extends Registry> = Partial<{
   [K in keyof R["list"]["query"]]: ExtractPrimitive<ExtractQuery<R["list"]["query"][K]>>;
@@ -37,7 +45,10 @@ export type InferQuery<R extends Registry> = Partial<{
   [K in RequiredKeys<R["list"]["query"]>]: ExtractPrimitive<ExtractQuery<R["list"]["query"][K]>>;
 };
 
-export type InferSelectors<T extends Selectors> = { [K in keyof T]: InferSelector<T[K]> };
+export type InferSelectors<T extends Selectors> = {
+  [K in keyof T]: InferSelector<T[K]>;
+};
+
 export type InferSelector<T> = T extends { type: infer U }
   ? U extends keyof Primitives
     ? Primitives[U]
@@ -52,11 +63,38 @@ export type InferSelector<T> = T extends { type: infer U }
         : never
   : never;
 
-export type InferItem<R extends Registry> = InferSelectors<R["item"]["fields"]>;
-export type InferList<R extends Registry> = InferSelectors<R["list"]["fields"]>;
-export type InferColumns<R extends Registry> = R["item"]["columns"] extends Selectors
+export type InferFields<R extends Registry> = InferSelectors<R["item"]["fields"]>;
+
+export type InferColumns<R extends Registry> = R["item"] extends { columns: Selectors }
   ? { [K in keyof R["item"]["columns"]]: InferSelector<R["item"]["columns"][K]> }
-  : never;
+  : object;
+
+// selection helpers
+export type InferSelectedFields<R extends Registry, F extends Array<keyof InferFields<R>>> = {
+  [K in F[number]]: InferFields<R>[K];
+};
+
+export type InferSelectedColumns<R extends Registry, C extends Array<keyof InferColumns<R>>> = {
+  [K in C[number]]: InferColumns<R>[K];
+};
+
+// item inference with optional selection
+type InferItemFields<R extends Registry, F> = F extends undefined
+  ? InferFields<R>
+  : F extends Array<keyof InferFields<R>>
+    ? InferSelectedFields<R, F>
+    : never;
+
+type InferItemColumns<R extends Registry, C> = C extends undefined
+  ? InferColumns<R>
+  : C extends Array<keyof InferColumns<R>>
+    ? InferSelectedColumns<R, C>
+    : never;
+
+export type InferItem<R extends Registry, F = undefined, C = undefined> = InferItemFields<R, F> &
+  InferItemColumns<R, C>;
+
+export type InferList<R extends Registry> = InferSelectors<R["list"]["fields"]>;
 
 // endpoint registry definitions
 export const character = {
@@ -80,7 +118,7 @@ export const character = {
       avatar: {
         attribute: "src",
         selector: ".frame__chara__face > img:nth-child(1)",
-        type: "string",
+        type: "url",
       },
       bio: { selector: ".character__selfintroduction", type: "string" },
       data_center: {
@@ -93,7 +131,7 @@ export const character = {
           crest: {
             attribute: "src",
             selector: "div.character__freecompany__crest > div > img",
-            type: "string[]",
+            type: "url[]",
           },
           id: {
             attribute: "href",
@@ -136,14 +174,14 @@ export const character = {
       portrait: {
         attribute: "src",
         selector: ".js__image_popup > img:nth-child(1)",
-        type: "string",
+        type: "url",
       },
       pvp_team: {
         shape: {
           crest: {
             attribute: "src",
             selector: ".character__pvpteam__crest__image > img",
-            type: "string[]",
+            type: "url[]",
           },
           id: {
             attribute: "href",
@@ -161,7 +199,7 @@ export const character = {
   },
   list: {
     fields: {
-      avatar: { attribute: "src", selector: ".entry__chara__face > img", type: "string" },
+      avatar: { attribute: "src", selector: ".entry__chara__face > img", type: "url" },
       data_center: { regex: /\[(?<datacenter>\w+)]/, selector: ".entry__world", type: "string" },
       grand_company: {
         shape: {
@@ -212,7 +250,7 @@ export const cwls = {
       formed: {
         regex: /ldst_strftime\((\d+),/,
         selector: ".heading__cwls__formed > script",
-        type: "string",
+        type: "date",
       },
       members: {
         regex: /(?<total>\d+)/,
@@ -252,7 +290,7 @@ export const freecompany = {
         attribute: "src",
         selector:
           "div.ldst__window:nth-child(1) > div:nth-child(2) > a:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > img",
-        type: "string[]",
+        type: "url[]",
       },
       data_center: {
         regex: /\[(?<datacenter>\w+)]/,
@@ -270,7 +308,7 @@ export const freecompany = {
       formed: {
         regex: /ldst_strftime\((\d+),/,
         selector: "p.freecompany__text:nth-of-type(5) > script",
-        type: "string",
+        type: "date",
       },
       grand_company: {
         shape: {
@@ -324,7 +362,7 @@ export const freecompany = {
       crest: {
         attribute: "src",
         selector: ".entry__freecompany__crest__image > img",
-        type: "string[]",
+        type: "url[]",
       },
       data_center: {
         regex: /\[(?<datacenter>\w+)]/,
@@ -334,7 +372,7 @@ export const freecompany = {
       formed: {
         regex: /ldst_strftime\((\d+),/,
         selector: ".entry__freecompany__fc-day > script",
-        type: "string",
+        type: "date",
       },
       grand_company: {
         shape: {
@@ -425,13 +463,13 @@ export const pvpteam = {
       crest: {
         attribute: "src",
         selector: ".entry__pvpteam__crest__image > img",
-        type: "string[]",
+        type: "url[]",
       },
       data_center: { selector: ".entry__pvpteam__name--dc", type: "string" },
       formed: {
         regex: /ldst_strftime\((\d+),/,
         selector: ".entry__pvpteam__data--formed > script",
-        type: "string",
+        type: "date",
       },
       name: { selector: ".entry__pvpteam__name--team", type: "string" },
     },
@@ -441,7 +479,7 @@ export const pvpteam = {
       crest: {
         attribute: "src",
         selector: ".entry__pvpteam__search__crest__image > img",
-        type: "string[]",
+        type: "url[]",
       },
       data_center: { selector: ".entry__world", type: "string" },
       id: {

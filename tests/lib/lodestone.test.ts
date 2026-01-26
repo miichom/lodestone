@@ -42,6 +42,28 @@ describe("Lodestone", () => {
           expect(result).not.toHaveProperty("mount");
           expect(result).not.toHaveProperty("faceaccessory");
         });
+
+        it("returns only the requested fields", async () => {
+          const result = await lodestone.character.get("29193229", {
+            fields: ["name"],
+          });
+
+          expect(result).toBeDefined();
+          expect(result).toHaveProperty("name");
+          expect(result).not.toHaveProperty("id");
+          expect(result).not.toHaveProperty("title");
+        });
+
+        it("allows selecting both fields and columns", async () => {
+          const result = await lodestone.character.get("29193229", {
+            columns: ["achievement"],
+            fields: ["name"],
+          });
+
+          expect(result).toHaveProperty("name");
+          expect(result).toHaveProperty("achievement");
+          expect(result).not.toHaveProperty("id");
+        });
       });
 
       describe("find", () => {
@@ -58,6 +80,20 @@ describe("Lodestone", () => {
           expect(results).toBeDefined();
           expect(Array.isArray(results)).toBe(true);
           expect(results?.length).toBeGreaterThan(0);
+        });
+
+        it("returns only the requested fields", async () => {
+          const results = await lodestone.character.find(
+            { q: "Chomu Suke", worldname: "Raiden" },
+            { fields: ["name"] }
+          );
+
+          expect(results).toBeDefined();
+          expect(Array.isArray(results)).toBe(true);
+
+          const first = results?.[0];
+          expect(first).toHaveProperty("name");
+          expect(first).not.toHaveProperty("id");
         });
       });
     });
@@ -100,6 +136,7 @@ describe("Lodestone", () => {
       describe("get", () => {
         it("returns null for an invalid identifier", async () => {
           const result = await lodestone.freecompany.get(0);
+
           expect(result).toBeNull();
         });
 

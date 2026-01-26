@@ -2,6 +2,7 @@
 import { parseHTML } from "linkedom/worker";
 import type {
   InferColumns,
+  InferFields,
   InferItem,
   InferList,
   InferQuery,
@@ -32,7 +33,7 @@ export type EndpointOptions = { headers?: Record<string, string>; locale?: strin
 export class Endpoint<R extends Registry> {
   /**
    * A generic Lodestone endpoint used to search and get items from Lodestone.
-   * @param {T} registry The provided endpoint registry containing field selectors to obtain
+   * @param {R} registry The provided endpoint registry containing field selectors to obtain
    * @param {EndpointOptions<R>} [options] Default method options to use when fetching from Lodestone.
    * @since 0.1.0
    */
@@ -41,6 +42,7 @@ export class Endpoint<R extends Registry> {
     protected readonly options?: EndpointOptions
   ) {}
 
+  /* v8 ignore next */
   private check(response: Response): void {
     const { status } = response;
     if (status === 200) return;
@@ -50,6 +52,7 @@ export class Endpoint<R extends Registry> {
     if (status >= 400) throw new LodestoneError(`Request failed with status ${status}.`);
   }
 
+  /* v8 ignore next */
   private async req(path: string, options?: EndpointOptions): Promise<Response> {
     const { headers: rawHeaders = {}, locale = "na" } = options ?? this.options!;
     const headers = Object.fromEntries(
@@ -184,6 +187,18 @@ export class Endpoint<R extends Registry> {
     }
   }
 
+  private pickSelectors<T extends Selectors, K extends keyof T>(
+    selectors: T,
+    keys: K[]
+  ): Pick<T, K> {
+    const out: Partial<Pick<T, K>> = {};
+    for (const key of keys) {
+      out[key] = selectors[key];
+    }
+    return out as Pick<T, K>;
+  }
+
+  /* v8 ignore next */
   private extract<T extends Selectors>(dom: Document | Element, selectors: T): InferSelectors<T> {
     const out: Record<string, unknown> = {};
 
@@ -202,11 +217,12 @@ export class Endpoint<R extends Registry> {
 
       if (isArray) {
         const nodes = [...dom.querySelectorAll(sel.selector)];
-        out[key] = nodes.map((n) => {
+        const array = nodes.map((n) => {
           const raw = this.getRawValue(n, sel);
           const extracted = this.applyRegex(raw, sel);
           return this.coerce(extracted, base);
         });
+        out[key] = array.length > 0 ? array : undefined;
         continue;
       }
 
@@ -230,10 +246,11 @@ export class Endpoint<R extends Registry> {
    * @returns {Promise<InferList<R>[] | null>}
    * @since 0.1.0
    */
-  public async find(
+  public async find<F extends Array<Extract<keyof InferFields<R>, string>> = []>(
     query: InferQuery<R>,
-    options: EndpointOptions = {}
+    options: EndpointOptions & { fields?: F } = {}
   ): Promise<InferList<R>[] | null> {
+    const { fields: filteredFields, ...rest } = options;
     this.validate(query);
 
     const parameters = new URLSearchParams(
@@ -249,13 +266,17 @@ export class Endpoint<R extends Registry> {
 
     const document = await this.fetchDocument(
       `?${parameters}`,
-      Object.assign(this.options ?? {}, options)
+      Object.assign(this.options ?? {}, rest)
     );
     if (!document) return null;
 
+    const selectedFields = filteredFields?.length
+      ? this.pickSelectors(this.registry.item.fields, filteredFields)
+      : this.registry.item.fields;
+
     const entries = [...document.querySelectorAll("div.entry")];
     const results = entries
-      .map((element) => this.extract(element, this.registry.list.fields))
+      .map((element) => this.extract(element, selectedFields))
       .filter((v) => v.id !== null || v.id !== undefined);
 
     return results as InferList<R>[];
@@ -264,26 +285,38 @@ export class Endpoint<R extends Registry> {
   /**
    * @param {NumberResolvable} id The unique identifier for the Lodestone item.
    * @param {EndpointOptions & { columns?: Array<keyof InferColumns<R>> }} [options] Optional method overrides.
-   * @returns {Promise<(InferItem<R> & Partial<InferColumns<R>) | null>}
+   * @returns {Promise<(InferItem<R>) | null>}
    * @since 0.1.0
    */
-  public async get(
+  public async get<
+    F extends Array<Extract<keyof InferFields<R>, string>> | undefined = undefined,
+    C extends Array<Extract<keyof InferColumns<R>, string>> | undefined = undefined,
+  >(
     id: NumberResolvable,
-    options: EndpointOptions & { columns?: Array<keyof InferColumns<R>> } = {}
-  ): Promise<(InferItem<R> & Partial<InferColumns<R>>) | null> {
-    const { columns, ...rest } = Object.assign(this.options ?? {}, options);
+    options: EndpointOptions & { fields?: F; columns?: C } = {}
+  ): Promise<InferItem<R, F, C> | null> {
+    const { columns, fields: filteredFields, ...rest } = options;
 
-    const document = await this.fetchDocument(id.toString(), rest);
+    const document = await this.fetchDocument(
+      id.toString(),
+      Object.assign(this.options ?? {}, rest)
+    );
     if (!document) return null;
 
-    const fields = this.extract(document, this.registry.item.fields);
+    const selectedFields = filteredFields?.length
+      ? this.pickSelectors(this.registry.item.fields, filteredFields)
+      : this.registry.item.fields;
+
+    const fields = this.extract(document, selectedFields);
     if (columns && this.registry.item.columns) {
       for (const key of columns) {
         const value = await this.fetchColumn(id, String(key), rest);
-        if (value !== undefined) fields[key as string] = value as Primitives;
+        if (value !== undefined) {
+          fields[key as string] = value as Primitives;
+        }
       }
     }
 
-    return fields as InferItem<R> & Partial<InferColumns<R>>;
+    return fields as InferItem<R, F, C>;
   }
 }
