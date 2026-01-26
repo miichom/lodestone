@@ -80,7 +80,7 @@ export const character = {
       avatar: {
         attribute: "src",
         selector: ".frame__chara__face > img:nth-child(1)",
-        type: "string",
+        type: "url",
       },
       bio: { selector: ".character__selfintroduction", type: "string" },
       data_center: {
@@ -93,7 +93,7 @@ export const character = {
           crest: {
             attribute: "src",
             selector: "div.character__freecompany__crest > div > img",
-            type: "string[]",
+            type: "url[]",
           },
           id: {
             attribute: "href",
@@ -136,14 +136,14 @@ export const character = {
       portrait: {
         attribute: "src",
         selector: ".js__image_popup > img:nth-child(1)",
-        type: "string",
+        type: "url",
       },
       pvp_team: {
         shape: {
           crest: {
             attribute: "src",
             selector: ".character__pvpteam__crest__image > img",
-            type: "string[]",
+            type: "url[]",
           },
           id: {
             attribute: "href",
@@ -161,7 +161,7 @@ export const character = {
   },
   list: {
     fields: {
-      avatar: { attribute: "src", selector: ".entry__chara__face > img", type: "string" },
+      avatar: { attribute: "src", selector: ".entry__chara__face > img", type: "url" },
       data_center: { regex: /\[(?<datacenter>\w+)]/, selector: ".entry__world", type: "string" },
       grand_company: {
         shape: {
@@ -212,7 +212,7 @@ export const cwls = {
       formed: {
         regex: /ldst_strftime\((\d+),/,
         selector: ".heading__cwls__formed > script",
-        type: "string",
+        type: "date",
       },
       members: {
         regex: /(?<total>\d+)/,
@@ -252,7 +252,7 @@ export const freecompany = {
         attribute: "src",
         selector:
           "div.ldst__window:nth-child(1) > div:nth-child(2) > a:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > img",
-        type: "string[]",
+        type: "url[]",
       },
       data_center: {
         regex: /\[(?<datacenter>\w+)]/,
@@ -270,7 +270,7 @@ export const freecompany = {
       formed: {
         regex: /ldst_strftime\((\d+),/,
         selector: "p.freecompany__text:nth-of-type(5) > script",
-        type: "string",
+        type: "date",
       },
       grand_company: {
         shape: {
@@ -324,7 +324,7 @@ export const freecompany = {
       crest: {
         attribute: "src",
         selector: ".entry__freecompany__crest__image > img",
-        type: "string[]",
+        type: "url[]",
       },
       data_center: {
         regex: /\[(?<datacenter>\w+)]/,
@@ -334,7 +334,7 @@ export const freecompany = {
       formed: {
         regex: /ldst_strftime\((\d+),/,
         selector: ".entry__freecompany__fc-day > script",
-        type: "string",
+        type: "date",
       },
       grand_company: {
         shape: {
@@ -425,13 +425,13 @@ export const pvpteam = {
       crest: {
         attribute: "src",
         selector: ".entry__pvpteam__crest__image > img",
-        type: "string[]",
+        type: "url[]",
       },
       data_center: { selector: ".entry__pvpteam__name--dc", type: "string" },
       formed: {
         regex: /ldst_strftime\((\d+),/,
         selector: ".entry__pvpteam__data--formed > script",
-        type: "string",
+        type: "date",
       },
       name: { selector: ".entry__pvpteam__name--team", type: "string" },
     },
@@ -441,7 +441,7 @@ export const pvpteam = {
       crest: {
         attribute: "src",
         selector: ".entry__pvpteam__search__crest__image > img",
-        type: "string[]",
+        type: "url[]",
       },
       data_center: { selector: ".entry__world", type: "string" },
       id: {

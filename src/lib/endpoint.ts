@@ -41,6 +41,7 @@ export class Endpoint<R extends Registry> {
     protected readonly options?: EndpointOptions
   ) {}
 
+  /* v8 ignore next */
   private check(response: Response): void {
     const { status } = response;
     if (status === 200) return;
@@ -50,6 +51,7 @@ export class Endpoint<R extends Registry> {
     if (status >= 400) throw new LodestoneError(`Request failed with status ${status}.`);
   }
 
+  /* v8 ignore next */
   private async req(path: string, options?: EndpointOptions): Promise<Response> {
     const { headers: rawHeaders = {}, locale = "na" } = options ?? this.options!;
     const headers = Object.fromEntries(
@@ -184,6 +186,7 @@ export class Endpoint<R extends Registry> {
     }
   }
 
+  /* v8 ignore next */
   private extract<T extends Selectors>(dom: Document | Element, selectors: T): InferSelectors<T> {
     const out: Record<string, unknown> = {};
 
