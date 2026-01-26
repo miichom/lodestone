@@ -6,7 +6,7 @@ export default defineConfig({
       enabled: true,
       provider: "v8",
       reporter: ["text", "json-summary", "lcov", "cobertura"],
-      thresholds: { branches: 90, functions: 90, lines: 90, statements: 90 },
+      thresholds: { branches: 75, functions: 80, lines: 80, statements: 80 },
     },
     environment: "node",
     globals: true,

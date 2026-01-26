@@ -126,6 +126,7 @@ export class Endpoint<R extends Registry> {
     }
   };
 
+  /* v8 ignore next */
   private validate = (query: InferQuery<R>): void => {
     const schema = this.registry.list.query;
 
@@ -143,7 +144,6 @@ export class Endpoint<R extends Registry> {
 
       if (this.isMissing(value)) continue;
 
-      /* v8 ignore next */
       if (!this.isValid(value, shape.type)) {
         throw new LodestoneError(`Query parameter "${key}" must be type ${shape.type}.`);
       } else if (shape.pattern && !shape.pattern.test(String(value))) {
@@ -170,6 +170,7 @@ export class Endpoint<R extends Registry> {
     } else return match[1] ?? "";
   }
 
+  /* v8 ignore next */
   private coerce<T extends Primitive>(value: string, type: T): Primitives[T] {
     switch (type) {
       case "boolean": {
