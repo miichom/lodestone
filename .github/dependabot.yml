@@ -9,3 +9,26 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      types:
+        patterns:
+          - "@types/*"
+      linting:
+        patterns:
+          - "*eslint*"
+          - "prettier"
+      build:
+        patterns:
+          - "typescript"
+          - "ts-node"
+          - "vite*"
+      runtime:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@types/*"
+          - "*eslint*"
+          - "prettier"
+          - "typescript"
+          - "ts-node"
+          - "vite*"
