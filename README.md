@@ -11,7 +11,9 @@ Designed for **server-side and worker runtimes**: [Node.js 20+](https://nodejs.o
 
 Most Lodestone scrapers rely on DOM emulation (e.g. [JSDOM](https://github.com/jsdom/jsdom), [cheerio](https://cheerio.js.org/)), which increases bundle size, slows cold starts, and often breaks in edge or serverless environments.
 
-`@miichom/lodestone` avoids DOM dependencies entirely, using a **predictable, schema-driven parsing model** that works consistently across modern runtimes.
+`@miichom/lodestone` avoids DOM dependencies entirely, using a **predictable, schema‑driven parsing model** that behaves consistently across modern runtimes.
+
+For a technical explanation of why avoiding full DOM emulation is faster, see [linkedom’s benchmark rationale](https://github.com/WebReflection/linkedom?tab=readme-ov-file#why-is-this-better).
 
 ## Features
 
