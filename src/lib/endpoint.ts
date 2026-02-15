@@ -15,6 +15,7 @@ import type {
 } from "./registry.js";
 
 export type NumberResolvable = string | number;
+export type Locale = "de" | "eu" | "fr" | "jp" | "na"; 
 
 /**
  * An extended {@link Error} to capture stack trace errors
@@ -28,7 +29,7 @@ export class LodestoneError extends Error {
   }
 }
 
-export type EndpointOptions = { headers?: Record<string, string>; locale?: string };
+export type EndpointOptions = { headers?: Record<string, string>; locale?: Locale };
 
 export class Endpoint<R extends Registry> {
   /**
