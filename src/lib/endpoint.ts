@@ -113,14 +113,6 @@ export class Endpoint<R extends Registry> {
       case "date": {
         return value instanceof Date || !Number.isNaN(Date.parse(String(value)));
       }
-      case "url": {
-        try {
-          new URL(String(value));
-          return true;
-        } catch {
-          return false;
-        }
-      }
       default: {
         return typeof value === "string";
       }
@@ -182,9 +174,6 @@ export class Endpoint<R extends Registry> {
       }
       case "date": {
         return new Date(value) as Primitives[T];
-      }
-      case "url": {
-        return new URL(value) as Primitives[T];
       }
       default: {
         return value as Primitives[T];
