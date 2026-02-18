@@ -95,6 +95,18 @@ describe("Lodestone", () => {
           expect(first).toHaveProperty("name");
           expect(first).not.toHaveProperty("id");
         });
+
+        it("respects the limit and returns only up to that many results", async () => {
+          const limit = 1;
+          const results = await lodestone.character.find(
+            { q: "Chomu Suke", worldname: "Raiden" },
+            { limit }
+          );
+
+          expect(results).toBeDefined();
+          expect(Array.isArray(results)).toBe(true);
+          expect(results?.length).toBeLessThanOrEqual(limit);
+        });
       });
     });
 
