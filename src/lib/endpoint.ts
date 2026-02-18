@@ -15,7 +15,7 @@ import type {
 } from "./registry.js";
 
 export type NumberResolvable = string | number;
-export type Locale = "de" | "eu" | "fr" | "jp" | "na"; 
+export type Locale = "de" | "eu" | "fr" | "jp" | "na";
 
 /**
  * An extended {@link Error} to capture stack trace errors
@@ -276,13 +276,11 @@ export class Endpoint<R extends Registry> {
     if (!document) return null;
 
     const selectedFields = filteredFields?.length
-      ? this.pickSelectors(this.registry.item.fields, filteredFields)
-      : this.registry.item.fields;
+      ? this.pickSelectors(this.registry.list.fields, filteredFields)
+      : this.registry.list.fields;
 
-    const entries = [...document.querySelectorAll("div.entry")];
-    const results = entries
-      .map((element) => this.extract(element, selectedFields))
-      .filter((v) => v.id !== null || v.id !== undefined);
+    const entries = [...document.querySelectorAll(".ldst__window div.entry")];
+    const results = entries.map((element) => this.extract(element, selectedFields));
 
     return results as InferList<R>[];
   }
