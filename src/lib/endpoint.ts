@@ -113,14 +113,6 @@ export class Endpoint<R extends Registry> {
       case "date": {
         return value instanceof Date || !Number.isNaN(Date.parse(String(value)));
       }
-      case "url": {
-        try {
-          new URL(String(value));
-          return true;
-        } catch {
-          return false;
-        }
-      }
       default: {
         return typeof value === "string";
       }
@@ -182,9 +174,6 @@ export class Endpoint<R extends Registry> {
       }
       case "date": {
         return new Date(value) as Primitives[T];
-      }
-      case "url": {
-        return new URL(value) as Primitives[T];
       }
       default: {
         return value as Primitives[T];
@@ -253,36 +242,48 @@ export class Endpoint<R extends Registry> {
    */
   public async find<F extends Array<Extract<keyof InferFields<R>, string>> = []>(
     query: InferQuery<R>,
-    options: EndpointOptions & { fields?: F } = {}
+    options: EndpointOptions & { fields?: F; pages?: number; limit?: number } = {}
   ): Promise<InferList<R>[] | null> {
-    const { fields: filteredFields, ...rest } = options;
     this.validate(query);
 
-    const parameters = new URLSearchParams(
-      Object.fromEntries(
-        Object.entries(query)
-          .filter(([, value]) => value !== undefined && value !== null)
-          .map(([key, value]) => [
-            key,
-            typeof value === "boolean" ? (value ? "1" : "0") : String(value),
-          ])
-      )
-    ).toString();
-
-    const document = await this.fetchDocument(
-      `?${parameters}`,
-      Object.assign(this.options ?? {}, rest)
-    );
-    if (!document) return null;
+    const { fields: filteredFields, limit, pages = 1, ...rest } = options;
 
     const selectedFields = filteredFields?.length
       ? this.pickSelectors(this.registry.list.fields, filteredFields)
       : this.registry.list.fields;
 
-    const entries = [...document.querySelectorAll(".ldst__window div.entry")];
-    const results = entries.map((element) => this.extract(element, selectedFields));
+    const results: InferList<R>[] = [];
+    let currentPage = 1;
 
-    return results as InferList<R>[];
+    while (currentPage <= pages) {
+      const parameters = new URLSearchParams(
+        Object.entries({ ...query, page: currentPage })
+          .filter(([, value]) => value !== undefined && value !== null)
+          .map(([key, value]) => [
+            key,
+            typeof value === "boolean" ? (value ? "1" : "0") : String(value),
+          ])
+      ).toString();
+
+      const document = await this.fetchDocument(
+        `?${parameters}`,
+        Object.assign(this.options ?? {}, rest)
+      );
+      if (!document) break;
+
+      const entries = [...document.querySelectorAll(".ldst__window div.entry")];
+      if (entries.length === 0) break;
+
+      results.push(...entries.map((element) => this.extract(element, selectedFields)));
+
+      if (limit && results.length >= limit) {
+        results.length = limit;
+        break;
+      }
+      currentPage++;
+    }
+
+    return results.length > 0 ? results : null;
   }
 
   /**

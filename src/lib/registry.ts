@@ -4,7 +4,6 @@ export type Primitives = {
   number: number;
   string: string;
   date: Date;
-  url: URL;
 };
 export type Primitive = keyof Primitives;
 
@@ -118,7 +117,7 @@ export const character = {
       avatar: {
         attribute: "src",
         selector: ".frame__chara__face > img:nth-child(1)",
-        type: "url",
+        type: "string",
       },
       bio: { selector: ".character__selfintroduction", type: "string" },
       data_center: {
@@ -131,7 +130,7 @@ export const character = {
           crest: {
             attribute: "src",
             selector: "div.character__freecompany__crest > div > img",
-            type: "url[]",
+            type: "string[]",
           },
           id: {
             attribute: "href",
@@ -174,14 +173,14 @@ export const character = {
       portrait: {
         attribute: "src",
         selector: ".js__image_popup > img:nth-child(1)",
-        type: "url",
+        type: "string",
       },
       pvp_team: {
         shape: {
           crest: {
             attribute: "src",
             selector: ".character__pvpteam__crest__image > img",
-            type: "url[]",
+            type: "string[]",
           },
           id: {
             attribute: "href",
@@ -199,7 +198,7 @@ export const character = {
   },
   list: {
     fields: {
-      avatar: { attribute: "src", selector: ".entry__chara__face > img", type: "url" },
+      avatar: { attribute: "src", selector: ".entry__chara__face > img", type: "string" },
       data_center: { regex: /\[(?<datacenter>\w+)]/, selector: ".entry__world", type: "string" },
       grand_company: {
         shape: {
@@ -290,7 +289,7 @@ export const freecompany = {
         attribute: "src",
         selector:
           "div.ldst__window:nth-child(1) > div:nth-child(2) > a:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > img",
-        type: "url[]",
+        type: "string[]",
       },
       data_center: {
         regex: /\[(?<datacenter>\w+)]/,
@@ -362,7 +361,7 @@ export const freecompany = {
       crest: {
         attribute: "src",
         selector: ".entry__freecompany__crest__image > img",
-        type: "url[]",
+        type: "string[]",
       },
       data_center: {
         regex: /\[(?<datacenter>\w+)]/,
@@ -463,7 +462,7 @@ export const pvpteam = {
       crest: {
         attribute: "src",
         selector: ".entry__pvpteam__crest__image > img",
-        type: "url[]",
+        type: "string[]",
       },
       data_center: { selector: ".entry__pvpteam__name--dc", type: "string" },
       formed: {
@@ -479,7 +478,7 @@ export const pvpteam = {
       crest: {
         attribute: "src",
         selector: ".entry__pvpteam__search__crest__image > img",
-        type: "url[]",
+        type: "string[]",
       },
       data_center: { selector: ".entry__world", type: "string" },
       id: {

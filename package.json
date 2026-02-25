@@ -1,25 +1,7 @@
 {
   "name": "@miichom/lodestone",
   "version": "0.1.1",
-  "description": "Fast, worker-safe Lodestone parsing ✨",
-  "keywords": [
-    "lodestone",
-    "ffxiv",
-    "final fantasy xiv",
-    "ffxiv data",
-    "scraper",
-    "dom parser",
-    "html parser",
-    "fast"
-  ],
-  "homepage": "https://github.com/miichom/lodestone#readme",
-  "bugs": {
-    "url": "https://github.com/miichom/lodestone/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/miichom/lodestone.git"
-  },
+  "description": "Typed, async FFXIV Lodestone client with schema-driven API.",
   "license": "MIT",
   "author": "miichom <hello@cammy.xyz> (https://cammy.xyz/)",
   "type": "module",
@@ -53,6 +35,22 @@
     "typescript-eslint": "^8.53.0",
     "vitest": "^4.0.17"
   },
+  "homepage": "https://gitlab.com/miichom/lodestone-js#readme",
+  "bugs": {
+    "url": "https://gitlab.com/miichom/lodestone-js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/miichom/lodestone-js.git"
+  },
+  "keywords": [
+    "ffxiv",
+    "lodestone",
+    "client",
+    "typescript",
+    "async",
+    "parser"
+  ],
   "files": [
     "dist"
   ],
