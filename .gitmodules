@@ -1,3 +1,0 @@
-[submodule "registry"]
-	path = registry
-	url = https://gitlab.com/convocation/lodestone-registry.git
