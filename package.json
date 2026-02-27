@@ -19,21 +19,21 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@tsconfig/node20": "^20.1.8",
-    "@types/node": "^25.3.0",
+    "@tsconfig/node20": "^20.1.9",
+    "@types/node": "^25.3.2",
     "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-sort": "^4.0.0",
     "eslint-plugin-unicorn": "^63.0.0",
-    "globals": "^17.0.0",
+    "globals": "^17.3.0",
     "jiti": "^2.6.1",
-    "prettier": "^3.8.0",
+    "prettier": "^3.8.1",
     "terser": "^5.46.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1",
-    "vitest": "^4.0.17"
+    "vitest": "^4.0.18"
   },
   "homepage": "https://gitlab.com/miichom/lodestone-js#readme",
   "bugs": {
