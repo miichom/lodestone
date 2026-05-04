@@ -31,9 +31,9 @@
     "prettier": "^3.8.3",
     "terser": "^5.46.0",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.1",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.5"
   },
   "homepage": "https://gitlab.com/miichom/lodestone-js#readme",
   "bugs": {
