@@ -33,7 +33,7 @@
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.2",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.6"
   },
   "homepage": "https://github.com/miichom/lodestone-js#readme",
   "bugs": {
