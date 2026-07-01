@@ -1,12 +1,7 @@
 {
-  "eslint.workingDirectories": [{ "mode": "auto" }],
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "svelte.plugin.typescript.enable": true,
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "never",
-    "source.fixAll": "always"
+    "source.action.useSortedPackageJson.biome": "explicit",
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit"
   }
 }

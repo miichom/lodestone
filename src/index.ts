@@ -1,6 +1,12 @@
 import type { EndpointOptions } from "./lib/endpoint.js";
 import { Endpoint } from "./lib/endpoint.js";
-import type { Character, CWLS, Freecompany, Linkshell, PvpTeam } from "./lib/registry.js";
+import type {
+  Character,
+  CWLS,
+  Freecompany,
+  Linkshell,
+  PvpTeam,
+} from "./lib/registry.js";
 import * as registry from "./lib/registry.js";
 
 export class Lodestone {

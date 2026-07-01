@@ -29,7 +29,10 @@ export class LodestoneError extends Error {
   }
 }
 
-export type EndpointOptions = { headers?: Record<string, string>; locale?: Locale };
+export type EndpointOptions = {
+  headers?: Record<string, string>;
+  locale?: Locale;
+};
 
 export class Endpoint<R extends Registry> {
   /**
@@ -47,21 +50,33 @@ export class Endpoint<R extends Registry> {
   private check(response: Response): void {
     const { status } = response;
     if (status === 200) return;
-    if (status === 302) throw new LodestoneError("Lodestone redirected the request.");
-    if (status === 503) throw new LodestoneError("Lodestone is undergoing maintenance.");
-    if (status >= 500) throw new LodestoneError(`Lodestone server error (${status}).`);
-    if (status >= 400) throw new LodestoneError(`Request failed with status ${status}.`);
+    if (status === 302)
+      throw new LodestoneError("Lodestone redirected the request.");
+    if (status === 503)
+      throw new LodestoneError("Lodestone is undergoing maintenance.");
+    if (status >= 500)
+      throw new LodestoneError(`Lodestone server error (${status}).`);
+    if (status >= 400)
+      throw new LodestoneError(`Request failed with status ${status}.`);
   }
 
   /* v8 ignore next */
-  private async req(path: string, options?: EndpointOptions): Promise<Response> {
-    const { headers: rawHeaders = {}, locale = "na" } = options ?? this.options!;
+  private async req(
+    path: string,
+    options: EndpointOptions = {}
+  ): Promise<Response> {
+    const { headers: rawHeaders = {}, locale = "na" } = Object.assign(
+      this.options ?? {},
+      options
+    );
     const headers = Object.fromEntries(
       Object.entries(rawHeaders).map(([k, v]) => [k.toLowerCase(), String(v)])
     );
 
     const baseUA = "curl/0.1.0 (+https://github.com/miichom/lodestone)";
-    headers["user-agent"] = headers["user-agent"] ? `${baseUA} ${headers["user-agent"]}` : baseUA;
+    headers["user-agent"] = headers["user-agent"]
+      ? `${baseUA} ${headers["user-agent"]}`
+      : baseUA;
 
     return fetch(
       `https://${locale}.finalfantasyxiv.com/lodestone/${this.registry.path}/${path.replace(/^\/+/, "")}`,
@@ -69,7 +84,10 @@ export class Endpoint<R extends Registry> {
     );
   }
 
-  private async fetchDocument(path: string, options?: EndpointOptions): Promise<Document | null> {
+  private async fetchDocument(
+    path: string,
+    options?: EndpointOptions
+  ): Promise<Document | null> {
     const response = await this.req(path, options);
     if (!response.ok || response.status === 404) return null;
     this.check(response);
@@ -88,11 +106,16 @@ export class Endpoint<R extends Registry> {
     const selector = this.registry.item.columns?.[key];
     if (!selector) return undefined;
 
-    const document = await this.fetchDocument(`${id.toString()}/${key}`, options);
+    const document = await this.fetchDocument(
+      `${id.toString()}/${key}`,
+      options
+    );
     if (!document) return undefined;
 
-    if (!("shape" in selector)) return this.extract(document, { value: selector }).value;
-    if (selector.type === "object") return this.extract(document, selector.shape);
+    if (!("shape" in selector))
+      return this.extract(document, { value: selector }).value;
+    if (selector.type === "object")
+      return this.extract(document, selector.shape);
 
     const root = selector.shape.root.selector;
     const nodes = [...document.querySelectorAll(root)];
@@ -111,7 +134,9 @@ export class Endpoint<R extends Registry> {
         return typeof value === "boolean";
       }
       case "date": {
-        return value instanceof Date || !Number.isNaN(Date.parse(String(value)));
+        return (
+          value instanceof Date || !Number.isNaN(Date.parse(String(value)))
+        );
       }
       default: {
         return typeof value === "string";
@@ -138,9 +163,13 @@ export class Endpoint<R extends Registry> {
       if (this.isMissing(value)) continue;
 
       if (!this.isValid(value, shape.type)) {
-        throw new LodestoneError(`Query parameter "${key}" must be type ${shape.type}.`);
+        throw new LodestoneError(
+          `Query parameter "${key}" must be type ${shape.type}.`
+        );
       } else if (shape.pattern && !shape.pattern.test(String(value))) {
-        throw new LodestoneError(`Query parameter "${key}" does not match required pattern.`);
+        throw new LodestoneError(
+          `Query parameter "${key}" does not match required pattern.`
+        );
       }
     }
   };
@@ -193,7 +222,10 @@ export class Endpoint<R extends Registry> {
   }
 
   /* v8 ignore next */
-  private extract<T extends Selectors>(dom: Document | Element, selectors: T): InferSelectors<T> {
+  private extract<T extends Selectors>(
+    dom: Document | Element,
+    selectors: T
+  ): InferSelectors<T> {
     const out: Record<string, unknown> = {};
 
     for (const [key, sel] of Object.entries(selectors)) {
@@ -240,9 +272,15 @@ export class Endpoint<R extends Registry> {
    * @returns {Promise<InferList<R>[] | null>}
    * @since 0.1.0
    */
-  public async find<F extends Array<Extract<keyof InferFields<R>, string>> = []>(
+  public async find<
+    F extends Array<Extract<keyof InferFields<R>, string>> = [],
+  >(
     query: InferQuery<R>,
-    options: EndpointOptions & { fields?: F; pages?: number; limit?: number } = {}
+    options: EndpointOptions & {
+      fields?: F;
+      pages?: number;
+      limit?: number;
+    } = {}
   ): Promise<InferList<R>[] | null> {
     this.validate(query);
 
@@ -274,7 +312,9 @@ export class Endpoint<R extends Registry> {
       const entries = [...document.querySelectorAll(".ldst__window div.entry")];
       if (entries.length === 0) break;
 
-      results.push(...entries.map((element) => this.extract(element, selectedFields)));
+      results.push(
+        ...entries.map((element) => this.extract(element, selectedFields))
+      );
 
       if (limit && results.length >= limit) {
         results.length = limit;
@@ -293,8 +333,12 @@ export class Endpoint<R extends Registry> {
    * @since 0.1.0
    */
   public async get<
-    F extends Array<Extract<keyof InferFields<R>, string>> | undefined = undefined,
-    C extends Array<Extract<keyof InferColumns<R>, string>> | undefined = undefined,
+    F extends
+      | Array<Extract<keyof InferFields<R>, string>>
+      | undefined = undefined,
+    C extends
+      | Array<Extract<keyof InferColumns<R>, string>>
+      | undefined = undefined,
   >(
     id: NumberResolvable,
     options: EndpointOptions & { fields?: F; columns?: C } = {}
