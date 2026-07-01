@@ -7,16 +7,13 @@ A **minimal, fully typed [Lodestone](https://na.finalfantasyxiv.com/lodestone/) 
 
 Designed for **server-side and edge runtimes**: [Node.js 20+](https://nodejs.org/), [Bun](https://bun.sh/), [Cloudflare Workers](https://developers.cloudflare.com/workers/), and [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API).
 
-<details>
-<summary>Why chose <code>@miichom/lodestone</code>?</summary>
+### Why chose `@miichom/lodestone`?
 
 Many Lodestone scrapers rely on **DOM emulation** (e.g., [JSDOM](https://github.com/jsdom/jsdom), [cheerio](https://cheerio.js.org/)), which increases bundle size, slows cold starts, and often breaks in edge or serverless environments.
 
 `@miichom/lodestone` avoids DOM entirely, relying on a **lightweight, schema-driven parser** that behaves consistently across all modern runtimes.
 
 This approach is faster and more reliable than full DOM emulation, see [linkedom's benchmark rationale](https://github.com/WebReflection/linkedom?tab=readme-ov-file#why-is-this-better) for the technical details.
-
-</details>
 
 ## Install
 
