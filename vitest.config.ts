@@ -4,11 +4,10 @@ export default defineConfig({
   test: {
     coverage: {
       provider: "v8",
-      reporter: ["text", "json-summary", "lcov", "cobertura"],
+      reporter: ["cobertura", "json-summary", "lcov"],
     },
-    environment: "node",
+    environment: "edge-runtime",
     globals: true,
-    hookTimeout: 10000,
-    testTimeout: 10000,
+    testTimeout: 10000, // 10s
   },
 });

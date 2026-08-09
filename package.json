@@ -1,31 +1,25 @@
 {
   "name": "@miichom/lodestone",
   "version": "0.1.1",
-  "description": "Typed, async FFXIV Lodestone client with schema-driven API.",
-  "keywords": [
-    "ffxiv",
-    "lodestone",
-    "client",
-    "typescript",
-    "async",
-    "parser"
-  ],
-  "homepage": "https://github.com/miichom/lodestone-js#readme",
+  "description": "A type-safe, async-first FFXIV Lodestone client with strict API validation.",
+  "homepage": "https://github.com/miichom/lodestone#readme",
   "bugs": {
-    "url": "https://github.com/miichom/lodestone-js/issues"
+    "url": "https://github.com/miichom/lodestone/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miichom/lodestone-js.git"
+    "url": "https://github.com/miichom/lodestone-js.git"
   },
   "license": "MIT",
-  "author": "miichom <hello@cammy.xyz> (https://cammy.xyz/)",
+  "author": {
+    "name": "miichom",
+    "email": "hello@cammy.xyz",
+    "url": "https://cammy.xyz/"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "tsdown",
     "format": "biome format --write",
@@ -35,21 +29,26 @@
     "test": "vitest --coverage"
   },
   "dependencies": {
-    "linkedom": "^0.18.12"
+    "@miichom/xpath2css": "^0.1.4",
+    "consola": "^3.4.2",
+    "linkedom": "^0.18.13",
+    "picocolors": "^1.1.1",
+    "std-env": "^4.2.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.1",
-    "@eslint/js": "^10.0.1",
-    "@tsconfig/node20": "^20.1.9",
-    "@types/node": "^26.1.0",
-    "@vitest/coverage-v8": "^4.1.9",
-    "prettier": "^3.9.4",
-    "tsdown": "^0.22.3",
+    "@biomejs/biome": "^2.5.7",
+    "@edge-runtime/vm": "^5.0.0",
+    "@tsconfig/node22": "^22.0.5",
+    "@types/node": "^26.2.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "tsdown": "^0.22.14",
+    "tsx": "^4.23.11",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   },
   "packageManager": "pnpm@10.28.0",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   }
 }

@@ -1,14 +1,14 @@
 {
-  "extends": "@tsconfig/node20/tsconfig.json",
+  "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
+    "declaration": true,
+    "lib": ["DOM", "DOM.AsyncIterable"],
+    "preserveConstEnums": true,
     "outDir": "dist",
+    "resolveJsonModule": true,
     "rootDir": ".",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "types": ["node"]
   },
-  "include": ["**/*"],
-  "exclude": ["dist"]
+  "include": ["src/**/*"],
+  "exclude": ["**/*.spec.ts"]
 }
